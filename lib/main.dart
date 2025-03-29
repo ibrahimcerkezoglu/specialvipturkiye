@@ -29,7 +29,6 @@ class _WebViewExampleState extends State<WebViewExample> {
   late InAppWebViewController _webViewController;
   bool _isConnected = true;
   bool _locationPermissionGranted = false;
-  DateTime? _longPressStartTime;
 
   @override
   void initState() {
@@ -83,52 +82,34 @@ class _WebViewExampleState extends State<WebViewExample> {
         backgroundColor: Colors.black, // Scaffold arka planı siyah.
         body: _isConnected
             ? SafeArea(
-                child: GestureDetector(
-                  onLongPressStart: (_) {
-                    _longPressStartTime = DateTime.now();
-                  },
-                  onLongPressEnd: (_) {
-                    if (_longPressStartTime != null) {
-                      final duration = DateTime.now().difference(_longPressStartTime!);
-                      if (duration >= Duration(seconds: 3)) {
-                        _webViewController.loadUrl(
-                          urlRequest: URLRequest(
-                            url: WebUri("https://www.specialvipturkiye.com/tasiyici-giris"),
-                          ),
-                        );
-                      }
-                    }
-                  },
-                  child: Container(
-                    color: Colors.black, // WebView çevresindeki Container da siyah.
-                    child: InAppWebView(
-                      initialUrlRequest: URLRequest(
-                        url: WebUri('https://www.specialvipturkiye.com/'),
-                      ),
-                      onLoadStart: (controller, url) {
-                        if (url != null) {
-                          _requestLocationPermissionIfNeeded(url.toString());
-                        }
-                      },
-                      androidOnGeolocationPermissionsShowPrompt:
-                          (InAppWebViewController controller, String origin) async {
-                        return GeolocationPermissionShowPromptResponse(
-                            origin: origin, allow: true, retain: true);
-                      },
-                      initialOptions: InAppWebViewGroupOptions(
-                        android: AndroidInAppWebViewOptions(
-                          useWideViewPort: true,
-                          geolocationEnabled: true,
-                          // backgroundColor parametresi kaldırıldı.
-                        ),
-                        ios: IOSInAppWebViewOptions(
-                          allowsInlineMediaPlayback: true,
-                        ),
-                      ),
-                      onWebViewCreated: (controller) {
-                        _webViewController = controller;
-                      },
+                child: Container(
+                  color: Colors.black, // Container arka planı siyah.
+                  child: InAppWebView(
+                    initialUrlRequest: URLRequest(
+                      url: WebUri('https://www.specialvipturkiye.com/'),
                     ),
+                    onLoadStart: (controller, url) {
+                      if (url != null) {
+                        _requestLocationPermissionIfNeeded(url.toString());
+                      }
+                    },
+                    androidOnGeolocationPermissionsShowPrompt:
+                        (InAppWebViewController controller, String origin) async {
+                      return GeolocationPermissionShowPromptResponse(
+                          origin: origin, allow: true, retain: true);
+                    },
+                    initialOptions: InAppWebViewGroupOptions(
+                      android: AndroidInAppWebViewOptions(
+                        useWideViewPort: true,
+                        geolocationEnabled: true,
+                      ),
+                      ios: IOSInAppWebViewOptions(
+                        allowsInlineMediaPlayback: true,
+                      ),
+                    ),
+                    onWebViewCreated: (controller) {
+                      _webViewController = controller;
+                    },
                   ),
                 ),
               )
