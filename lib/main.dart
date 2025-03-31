@@ -29,12 +29,31 @@ class _WebViewExampleState extends State<WebViewExample> {
   late InAppWebViewController _webViewController;
   bool _isConnected = true;
   bool _locationPermissionGranted = false;
+  late PullToRefreshController pullToRefreshController;
 
   @override
   void initState() {
     super.initState();
     _checkConnectivity();
-    // Başlangıçta konum izni istemiyoruz; sadece ilgili sayfaya girildiğinde isteyeceğiz.
+
+    // Pull-to-refresh controller'ı başlatıyoruz.
+    pullToRefreshController = PullToRefreshController(
+      options: PullToRefreshOptions(
+        color: Colors.blue,
+      ),
+      onRefresh: () async {
+        // Platforma göre sayfayı yenileme işlemi.
+        if (Platform.isAndroid) {
+          _webViewController.reload();
+        } else if (Platform.isIOS) {
+          var currentUrl = await _webViewController.getUrl();
+          _webViewController.loadUrl(
+              urlRequest: URLRequest(url: currentUrl));
+        }
+      },
+    );
+
+    // Başlangıçta konum izni istemiyoruz; ilgili sayfaya girildiğinde isteyeceğiz.
   }
 
   // İnternet bağlantısını kontrol eder.
@@ -88,10 +107,17 @@ class _WebViewExampleState extends State<WebViewExample> {
                     initialUrlRequest: URLRequest(
                       url: WebUri('https://www.specialvipturkiye.com/'),
                     ),
+                    pullToRefreshController: pullToRefreshController,
                     onLoadStart: (controller, url) {
                       if (url != null) {
                         _requestLocationPermissionIfNeeded(url.toString());
                       }
+                    },
+                    onLoadStop: (controller, url) async {
+                      pullToRefreshController.endRefreshing();
+                    },
+                    onLoadError: (controller, url, code, message) {
+                      pullToRefreshController.endRefreshing();
                     },
                     androidOnGeolocationPermissionsShowPrompt:
                         (InAppWebViewController controller, String origin) async {
