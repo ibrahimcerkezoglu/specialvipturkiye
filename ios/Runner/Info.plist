@@ -61,7 +61,8 @@
     <string>Konumunuzu uygulama açıkken kullanacağız.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Uygulama, dosya kaydetmek için fotoğraf galerisine erişebilir.</string>
-
+	<key>NSCameraUsageDescription</key>
+	<string>Kullanıcı, fotoğraf ekleme butonuna bastığında hizmete görsel eklemek için kameraya erişim sağlanır.</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>Uygulama, fotoğraf eklemek için galeriyi kullanabilir.</string>
 
