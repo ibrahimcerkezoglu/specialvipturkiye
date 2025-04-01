@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.1</string> <!-- yeni sürüm numarası -->
+	<string>1.0.2</string> <!-- yeni sürüm numarası -->
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2</string> <!-- build numarası -->
+	<string>3</string> <!-- build numarası -->
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 
