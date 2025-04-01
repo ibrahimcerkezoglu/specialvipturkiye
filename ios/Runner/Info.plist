@@ -59,16 +59,9 @@
 	<!-- İzinler -->
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Konumunuzu uygulama açıkken kullanacağız.</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Konumunuzu her zaman kullanmamıza izin verin.</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Konumunuzu arka planda ve ön planda kullanacağız.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Uygulama, dosya kaydetmek için fotoğraf galerisine erişebilir.</string>
-    <key>NSCameraUsageDescription</key>
-    <string>Uygulama, kamera kullanımına ihtiyaç duyuyor.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Ses kaydı için mikrofon kullanımına izin verin.</string>
+
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>Uygulama, fotoğraf eklemek için galeriyi kullanabilir.</string>
 
