@@ -131,6 +131,9 @@ class _WebViewExampleState extends State<WebViewExample> {
                       ),
                       ios: IOSInAppWebViewOptions(
                         allowsInlineMediaPlayback: true,
+                        allowsAirPlayForMediaPlayback: true,
+                        allowsBackForwardNavigationGestures: true,
+                        allowsLinkPreview: true,
                       ),
                     ),
                     onWebViewCreated: (controller) {
