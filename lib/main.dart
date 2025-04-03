@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'Special Vip Turkiye',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.black, // Uygulamanın genel arka planı siyah olsun.
+        scaffoldBackgroundColor: Colors.black,
       ),
       home: WebViewExample(),
     );
@@ -36,27 +36,19 @@ class _WebViewExampleState extends State<WebViewExample> {
     super.initState();
     _checkConnectivity();
 
-    // Pull-to-refresh controller'ı başlatıyoruz.
     pullToRefreshController = PullToRefreshController(
-      options: PullToRefreshOptions(
-        color: Colors.blue,
-      ),
+      options: PullToRefreshOptions(color: Colors.blue),
       onRefresh: () async {
-        // Platforma göre sayfayı yenileme işlemi.
         if (Platform.isAndroid) {
           _webViewController.reload();
         } else if (Platform.isIOS) {
           var currentUrl = await _webViewController.getUrl();
-          _webViewController.loadUrl(
-              urlRequest: URLRequest(url: currentUrl));
+          _webViewController.loadUrl(urlRequest: URLRequest(url: currentUrl));
         }
       },
     );
-
-    // Başlangıçta konum izni istemiyoruz; ilgili sayfaya girildiğinde isteyeceğiz.
   }
 
-  // İnternet bağlantısını kontrol eder.
   Future<void> _checkConnectivity() async {
     final connectivity = Connectivity();
     final status = await connectivity.checkConnectivity();
@@ -70,7 +62,6 @@ class _WebViewExampleState extends State<WebViewExample> {
     });
   }
 
-  // Belirli bir sayfa yüklendiğinde konum iznini ister.
   Future<void> _requestLocationPermissionIfNeeded(String url) async {
     if (url.contains("/tasiyici/specialvipturkiye") && !_locationPermissionGranted) {
       if (await Permission.location.request().isGranted) {
@@ -84,7 +75,27 @@ class _WebViewExampleState extends State<WebViewExample> {
     }
   }
 
-  // Geri tuşu kontrolü: WebView'de önceki sayfa varsa geri dön, yoksa uygulamayı kapat.
+  Future<void> _checkMapLoadedPeriodically() async {
+    for (int i = 0; i < 3; i++) {
+      await Future.delayed(Duration(seconds: 2));
+
+      var result = await _webViewController.evaluateJavascript(source: '''
+        (function() {
+          var mapContainer = document.querySelector('.gm-style');
+          return !!mapContainer;
+        })();
+      ''');
+
+      if (result == true) {
+        debugPrint("✅ Harita yüklendi.");
+        return;
+      }
+    }
+
+    debugPrint("❌ Harita yüklenmedi, sayfa yenileniyor...");
+    _webViewController.reload();
+  }
+
   Future<bool> _onWillPop() async {
     if (await _webViewController.canGoBack()) {
       _webViewController.goBack();
@@ -98,11 +109,11 @@ class _WebViewExampleState extends State<WebViewExample> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        backgroundColor: Colors.black, // Scaffold arka planı siyah.
+        backgroundColor: Colors.black,
         body: _isConnected
             ? SafeArea(
                 child: Container(
-                  color: Colors.black, // Container arka planı siyah.
+                  color: Colors.black,
                   child: InAppWebView(
                     initialUrlRequest: URLRequest(
                       url: WebUri('https://www.specialvipturkiye.com/'),
@@ -115,6 +126,9 @@ class _WebViewExampleState extends State<WebViewExample> {
                     },
                     onLoadStop: (controller, url) async {
                       pullToRefreshController.endRefreshing();
+                      if (url.toString().contains("/business/home/addorupdatebusiness")) {
+                        _checkMapLoadedPeriodically();
+                      }
                     },
                     onLoadError: (controller, url, code, message) {
                       pullToRefreshController.endRefreshing();
@@ -125,6 +139,9 @@ class _WebViewExampleState extends State<WebViewExample> {
                           origin: origin, allow: true, retain: true);
                     },
                     initialOptions: InAppWebViewGroupOptions(
+                      crossPlatform: InAppWebViewOptions(
+                          javaScriptEnabled: true,
+                        ),
                       android: AndroidInAppWebViewOptions(
                         useWideViewPort: true,
                         geolocationEnabled: true,
@@ -154,33 +171,20 @@ class _WebViewExampleState extends State<WebViewExample> {
                       ),
                       child: Column(
                         children: [
-                          const Icon(
-                            Icons.wifi_off,
-                            size: 50,
-                            color: Colors.red,
-                          ),
+                          const Icon(Icons.wifi_off, size: 50, color: Colors.red),
                           const SizedBox(height: 15),
                           const Text(
                             "İnternet bağlantısı yok!",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                            ),
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: _checkConnectivity,
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                             ),
-                            child: const Text(
-                              "Tekrar Dene",
-                              style: TextStyle(fontSize: 16),
-                            ),
+                            child: const Text("Tekrar Dene", style: TextStyle(fontSize: 16)),
                           ),
                         ],
                       ),
