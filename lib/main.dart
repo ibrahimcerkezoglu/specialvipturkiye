@@ -147,6 +147,8 @@ class _WebViewExampleState extends State<WebViewExample> {
                         geolocationEnabled: true,
                       ),
                       ios: IOSInAppWebViewOptions(
+                        alwaysBounceHorizontal: false,
+                        alwaysBounceVertical: false,
                         allowsInlineMediaPlayback: true,
                         allowsAirPlayForMediaPlayback: true,
                         allowsBackForwardNavigationGestures: true,
